@@ -109,3 +109,52 @@ router.delete('/:id', async (req: Request, res: Response)=> {
     console.log(error)
   }
 })
+
+router.put('/:id', async (req: Request, res: Response)=> {
+  const { id } = req.params
+  const {
+    clientname, 
+    clientemail,
+    description,
+    status,
+    paymentterms,
+    paymentdue,
+    streetaddress,
+    city,
+    postcode,
+    country
+   } = req.body;
+  const properties = 
+  `UPDATE invoice
+    SET clientname = $1,
+    clientemail = $2,
+    description = $3,
+    status = $4,
+    paymentterms = $5,
+    paymentdue = $6,
+    streetaddress = $7,
+    city = $8,
+    postcode = $9,
+    country = $10
+    WHERE id = $11
+  `
+  const values = [
+    clientname,
+    clientemail,
+    description,
+    status,
+    paymentterms,
+    paymentdue,
+    streetaddress,
+    city,
+    postcode,
+    country,
+    id
+  ]
+  try {
+    await db.query(properties, values)
+    res.status(200).json({"message": "Invoice has been updated"})
+  } catch (error) {
+    console.log(error)
+  }
+})
