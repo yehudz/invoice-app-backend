@@ -13,5 +13,5 @@ const client = new Client({
 client.connect()
 
 module.exports = {
-  query: (text, params) => client.query(text, params),
+  query: (text: any, params: any) => client.query(text, params),
 }
