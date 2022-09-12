@@ -32,7 +32,8 @@ router.post('/', async (req: Request, res: Response)=> {
     streetaddress,
     city,
     postcode,
-    country
+    country,
+    items
    } = req.body;
   const properties = 
   `INSERT INTO invoice(
@@ -65,6 +66,34 @@ router.post('/', async (req: Request, res: Response)=> {
   ]
   try {
     const result = await db.query(properties, values)
+    const invoiceId = result.rows[0].id
+
+    type Item = {
+      name: string
+      quanity: number
+      price: number
+      totel: number
+    }
+
+    items.forEach(async (item: Item)=> {
+      if (!items) return
+      await db.query(
+        `INSERT INTO items (
+          name, quanity, price, total, invoiceId
+        )
+          VALUES(
+            $1, $2, $3, $4, $5
+          )
+        `, 
+        [
+          item.name, 
+          item.quanity, 
+          item.price,
+          item.quanity * item.price,
+          invoiceId
+        ]
+      )
+    })
     res.status(200).json(result.rows[0])
   } catch (error) {
     console.log(error)

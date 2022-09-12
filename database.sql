@@ -21,5 +21,16 @@ CREATE TABLE invoice (
     paymentTerms INT,
     paymentDue DATE NOT NULL,
     createdAt TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    total INT NOT NULL
     PRIMARY KEY (id)
+);
+
+CREATE TABLE items (
+  id uuid DEFAULT uuid_generate_v4 (),
+  PRIMARY KEY (id),
+  invoice_id uuid NOT NULL,
+  name VARCHAR(50) NOT NULL,
+  quantity INT NOT NULL,
+  price INT NOT NULL,
+  CONSTRAINT fk_invoice FOREIGN KEY(invoice_id) REFERENCES invoice(id) on delete cascade
 );
