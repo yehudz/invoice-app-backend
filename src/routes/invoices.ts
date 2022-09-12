@@ -99,3 +99,13 @@ router.post('/', async (req: Request, res: Response)=> {
     console.log(error)
   }
 })
+
+router.delete('/:id', async (req: Request, res: Response)=> {
+  try {
+    const { id } = req.params
+    await db.query("DELETE FROM invoice Where id = $1", [id])
+    res.json({"message": "Invoice was deleted"})
+  } catch (error) {
+    console.log(error)
+  }
+})
