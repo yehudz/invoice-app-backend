@@ -30,3 +30,20 @@ router.post('/', async (req: Request, res: Response)=> {
     console.log(error)
   }
 })
+
+router.put('/:id', async (req: Request, res: Response)=> {
+  const { id } = req.params;
+  const { name, quantity, price } = req.body
+  await db.query(
+    `UPDATE items 
+      SET name = $1, 
+      quantity = $2, 
+      price = $3,
+      total = $4 
+      WHERE id = $5
+    `, 
+    [name, quantity, price, price*quantity, id]
+  )
+  res.json({"Message": "Updated item"})
+})
+})
