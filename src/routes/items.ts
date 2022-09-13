@@ -14,3 +14,19 @@ router.get('/:id', async (req: Request, res: Response)=> {
     "SELECT * FROM items WHERE invoice_id = $1", [id])
   res.json(items.rows)
 })
+
+router.post('/', async (req: Request, res: Response)=> {
+  const { name, quantity, price, invoice_id } = req.body
+  try {
+    const newItem = await db.query(
+    `INSERT INTO items (
+      name, quantity, price, total, invoice_id
+    ) VALUES (
+      $1, $2, $3, $4, $5
+    ) RETURNING *`, [name, quantity, price, price*quantity, invoice_id]
+  )
+  res.status(200).json(newItem.rows[0])
+  } catch (error) {
+    console.log(error)
+  }
+})
