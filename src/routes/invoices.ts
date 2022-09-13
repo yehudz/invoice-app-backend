@@ -70,16 +70,16 @@ router.post('/', async (req: Request, res: Response)=> {
 
     type Item = {
       name: string
-      quanity: number
+      quantity: number
       price: number
-      totel: number
+      total: number
     }
 
     items.forEach(async (item: Item)=> {
       if (!items) return
       await db.query(
         `INSERT INTO items (
-          name, quanity, price, total, invoiceId
+          name, quantity, price, total, invoice_id
         )
           VALUES(
             $1, $2, $3, $4, $5
@@ -87,9 +87,9 @@ router.post('/', async (req: Request, res: Response)=> {
         `, 
         [
           item.name, 
-          item.quanity, 
+          item.quantity, 
           item.price,
-          item.quanity * item.price,
+          item.quantity * item.price,
           invoiceId
         ]
       )
