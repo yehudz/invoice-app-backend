@@ -46,4 +46,13 @@ router.put('/:id', async (req: Request, res: Response)=> {
   )
   res.json({"Message": "Updated item"})
 })
+
+router.delete('/:id', async (req: Request, res: Response)=> {
+  try {
+    const { id } = req.params;
+    await db.query("DELETE FROM items WHERE id = $1", [id]) 
+    res.json({"Message": "Items has been deleted"})
+  } catch (error) {
+    console.log(error)
+  }
 })
