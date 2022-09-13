@@ -70,16 +70,16 @@ router.post('/', async (req: Request, res: Response)=> {
 
     type Item = {
       name: string
-      quanity: number
+      quantity: number
       price: number
-      totel: number
+      total: number
     }
 
     items.forEach(async (item: Item)=> {
       if (!items) return
       await db.query(
         `INSERT INTO items (
-          name, quanity, price, total, invoiceId
+          name, quantity, price, total, invoice_id
         )
           VALUES(
             $1, $2, $3, $4, $5
@@ -87,9 +87,9 @@ router.post('/', async (req: Request, res: Response)=> {
         `, 
         [
           item.name, 
-          item.quanity, 
+          item.quantity, 
           item.price,
-          item.quanity * item.price,
+          item.quantity * item.price,
           invoiceId
         ]
       )
@@ -105,6 +105,55 @@ router.delete('/:id', async (req: Request, res: Response)=> {
     const { id } = req.params
     await db.query("DELETE FROM invoice Where id = $1", [id])
     res.json({"message": "Invoice was deleted"})
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+router.put('/:id', async (req: Request, res: Response)=> {
+  const { id } = req.params
+  const {
+    clientname, 
+    clientemail,
+    description,
+    status,
+    paymentterms,
+    paymentdue,
+    streetaddress,
+    city,
+    postcode,
+    country
+   } = req.body;
+  const properties = 
+  `UPDATE invoice
+    SET clientname = $1,
+    clientemail = $2,
+    description = $3,
+    status = $4,
+    paymentterms = $5,
+    paymentdue = $6,
+    streetaddress = $7,
+    city = $8,
+    postcode = $9,
+    country = $10
+    WHERE id = $11
+  `
+  const values = [
+    clientname,
+    clientemail,
+    description,
+    status,
+    paymentterms,
+    paymentdue,
+    streetaddress,
+    city,
+    postcode,
+    country,
+    id
+  ]
+  try {
+    await db.query(properties, values)
+    res.status(200).json({"message": "Invoice has been updated"})
   } catch (error) {
     console.log(error)
   }
